@@ -15,6 +15,29 @@
             var map;
             var infoWindow = new google.maps.InfoWindow();
             
+            function initialize(){
+                var myOptions = {
+                    zoom: 6,
+                    maxZoom: 12,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                };
+            }
+            
+            map = new google.maps.Map(document.getElementById("map_canvas"), myOptions)
+            
+            if(navigator.geolocation){
+                browserSupportFlag = true;
+                navigator.geolocation.getCurrentPosition(function(position){
+                    initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                    contentString = "This is where the Magic happens!";
+                    map.setCenter(initialLocation);
+                    infoWindow.setContent(contentString);
+                    infoWindow.setPosition(initialLocation);
+                    
+                }
+                );
+            }
+            
         </script>	    
 	</head>
 	<body onload="initialize()">
