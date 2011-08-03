@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, user-scalable=no" />
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+	    <title>SingDeals</title>
+	    <link href="http://code.google.com/apis/maps/documentation/javascript/examples/default.css" rel="stylesheet" type="text/css" /> 
+	    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=true"></script> 
+	    <script type="text/javascript">
+            var initialLocation;
+            var mongolia = new google.maps.LatLng(46.507635,102.456055);
+            var singapore = new google.maps.LatLng(1.294612,103.833065);
+            var browserSupportFlag = new Boolean();
+            var map;
+            var infoWindow = new google.maps.InfoWindow();
+            
+        </script>	    
+	</head>
+	<body onload="initialize()">
+	    <div id="map_canvas"></div>
+	</body>
+</html>
+
