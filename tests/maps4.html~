@@ -1,4 +1,3 @@
-
 <!DOCTYPE html> 
 <html> 
 <head> 
@@ -11,7 +10,7 @@
     navigator.geolocation.getCurrentPosition(function(position){
         var myLatlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
         var myOptions = {
-          zoom: 8,
+          zoom: 6,
           center: myLatlng,
           mapTypeId: google.maps.MapTypeId.ROADMAP
         }
@@ -24,7 +23,7 @@
     },function(){
         var myLatlng = new google.maps.LatLng(46.507635,102.456055);
         var myOptions = {
-          zoom: 8,
+          zoom: 6,
           center: myLatlng,
           mapTypeId: google.maps.MapTypeId.ROADMAP
         }
