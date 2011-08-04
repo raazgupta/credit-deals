@@ -8,7 +8,6 @@
 	    <link href="style.css" rel="stylesheet" type="text/css" /> 
 	    <script type="text/javascript">
             function initialize(){
-                var infoWindow = new google.maps.InfoWindow();
                 var map;
                 var initialLocation;
                 var myOptions = {
@@ -22,28 +21,19 @@
                         initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                         contentString = "This is where the Magic happens!";
                         map.setCenter(initialLocation);
-                        infoWindow.setContent(contentString);
-                        infoWindow.setPosition(initialLocation);
-                        infoWindow.open(map);
-                    }, function(){ 
-                        handleNoGeolocation();
-                    }
+                    }, 
                     );
                 }
             }
             
-            function handleNoGeolocation(){
-                var map;
-                var initialLocation;
-                var infoWindow = new google.maps.InfoWindow();
-                var mongolia = new google.maps.LatLng(46.507635,102.456055);
-                initialLocation = mongolia;
-                map.setCenter(initialLocation);
-                contentString = "This is what happens to people who don't Show their Locations";
-                infoWindow.setContent(contentString);
-                infoWindow.setPosition(initialLocation);
-                infoWindow.open(map);
+            function loadScript(){
+                var script = document.createElement("script");
+                script.type = "text/javascript";
+                script.src = "http://maps.googleapis.com/maps/api/js?sensor=false&callback=initialize";
+                document.body.appendChild(script);
             }
+            
+            window.onload = loadScript;
             
         </script>	    
 	</head>
