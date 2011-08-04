@@ -2,31 +2,22 @@
 
 <html>
 	<head>
-		<meta name="viewport" content="width=device-width, user-scalable=no" />
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
 	    <title>SingDeals</title>
-	    <link href="http://code.google.com/apis/maps/documentation/javascript/examples/default.css" rel="stylesheet" type="text/css" /> 
-	    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=true"></script> 
+	    <link href="style.css" rel="stylesheet" type="text/css" /> 
 	    <script type="text/javascript">
-            var initialLocation;
-            var mongolia = new google.maps.LatLng(46.507635,102.456055);
-            var singapore = new google.maps.LatLng(1.294612,103.833065);
-            var browserSupportFlag = new Boolean();
-            var map;
-            var infoWindow = new google.maps.InfoWindow();
-            
             function initialize(){
+                var infoWindow = new google.maps.InfoWindow();
+                var map;
+                var initialLocation;
                 var myOptions = {
                     zoom: 6,
-                    maxZoom: 12,
                     mapTypeId: google.maps.MapTypeId.ROADMAP
                 };
-            
-            
                 map = new google.maps.Map(document.getElementById("map_canvas"), myOptions)
                 
                 if(navigator.geolocation){
-                    browserSupportFlag = true;
                     navigator.geolocation.getCurrentPosition(function(position){
                         initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                         contentString = "This is where the Magic happens!";
@@ -35,13 +26,17 @@
                         infoWindow.setPosition(initialLocation);
                         infoWindow.open(map);
                     }, function(){ 
-                        handleNoGeolocation(browserSupportFlag);
+                        handleNoGeolocation();
                     }
                     );
                 }
             }
             
-            function handleNoGeolocation(errorFlag){
+            function handleNoGeolocation(){
+                var map;
+                var initialLocation;
+                var infoWindow = new google.maps.InfoWindow();
+                var mongolia = new google.maps.LatLng(46.507635,102.456055);
                 initialLocation = mongolia;
                 map.setCenter(initialLocation);
                 contentString = "This is what happens to people who don't Show their Locations";
@@ -50,10 +45,19 @@
                 infoWindow.open(map);
             }
             
+            function loadScript(){
+                var script = document.createElement("script");
+                script.type = "text/javascript";
+                script.src = "http://maps.googleapis.com/maps/api/js?sensor=false&callback=initialize";
+                document.body.appendChild(script);
+            }
+            
+            window.onload = loadScript;
+            
         </script>	    
 	</head>
-	<body onload="initialize()">
+	<body>
 	    <div id="map_canvas"></div>
 	</body>
-</html> 
+</html>
 
