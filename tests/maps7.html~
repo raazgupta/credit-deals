@@ -1,0 +1,110 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" /> 
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/> 
+<link href="style.css" rel="stylesheet" type="text/css" />
+<title>SingDeals</title> 
+<script type="text/javascript">
+  var map; 
+  var locationGiven = new Boolean();
+  
+  function dealsNearbyControl(controlDiv, map){
+        controlDiv.style.padding = '5px';
+        
+        //Set CSS for Control border
+        var controlUI = document.createElement('DIV');
+        controlUI.style.backgroundColor = '#3b5998';
+        controlUI.style.color = '#ffffff';
+        controlUI.style.textAlign = 'center';
+        controlUI.style.cursor = 'pointer';
+        controlDiv.appendChild(controlUI);
+        
+        //Set CSS to control interior
+        var controlText = document.createElement('DIV');
+        controlText.style.fontFamily = 'Helvetica';
+        controlText.style.fontSize = '12px';
+        controlText.style.padding = '5px';
+        controlText.style.fontWeight = 'bold';
+        controlText.innerHTML = 'Search Deals Nearby';
+        controlUI.appendChild(controlText);
+        
+        //Setup the click event listener
+        google.maps.event.addDomListener(controlUI, 'click', showNearbyDeals);
+        
+  }
+  
+  function showNearbyDeals(){
+        //Create markers on the map to show deals
+        var location;
+        var marker;
+        //marker1
+        location = new google.maps.LatLng(1.284674,103.847508);
+        marker = new google.maps.Marker({
+            position: location,
+            map: map
+        });
+        market.setTitle('Riciotti');
+        attachMessage(marker, "1 for 1 beers at $10/beer");
+        
+  }
+  
+  function attachMessage(marker, messageStr){
+        var infoWindow = new google.maps.InfoWindow({
+            content: messageStr,
+            size: new google.maps.Size(50,50)
+        }
+        );
+        
+        google.maps.event.addListener(marker, 'click', function(){
+            infoWindow.open(map, marker);
+        });
+  }
+  
+  function initialize() {
+    var myOptions = {
+          zoom: 12,
+          mapTypeId: google.maps.MapTypeId.ROADMAP,
+          disableDefaultUI: true
+    }
+    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions)
+    navigator.geolocation.getCurrentPosition(function(position){
+        locationGiven = true;
+        var myLatlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        map.setCenter(myLatlng);
+    },function(){
+        locationGiven = false;
+        var myLatlng = new google.maps.LatLng(46.507635,102.456055);
+        map.setCenter(myLatlng);
+        map.setZoom(4);
+        var contentString = "This is what happens to people who dont Share Location";
+        var infoWindow = new google.maps.InfoWindow();
+        infoWindow.setContent(contentString);
+        infoWindow.setPosition(myLatlng);
+        infoWindow.open(map);
+    }
+    );
+    
+    //Create a div to hold the Deals Nearby button and call the DIV contructor
+    var controlDiv = document.createElement('DIV');
+    var nearbyDealsControl = new dealsNearbyControl(controlDiv, map);
+    
+    controlDiv.index = 1;
+    map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(controlDiv);
+    
+  }
+  
+  function loadScript() {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "http://maps.googleapis.com/maps/api/js?sensor=true&callback=initialize";
+    document.body.appendChild(script);
+  }
+  
+  window.onload = loadScript;
+</script> 
+</head> 
+<body> 
+  <div id="map_canvas"></div> 
+</body> 
+</html> 
