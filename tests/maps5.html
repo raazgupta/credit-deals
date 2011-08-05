@@ -1,0 +1,70 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" /> 
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/> 
+<link href="style.css" rel="stylesheet" type="text/css" />
+<title>SingDeals</title> 
+<script type="text/javascript">
+  var map; 
+  var locationGiven = new Boolean();
+  var infoWindow;
+  var contentString = "Would you like to search for Deals nearby?";
+  function initialize() {
+    var myOptions = {
+          zoom: 12,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+    }
+    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions)
+    infoWindow = new google.maps.InfoWindow();
+    infoWindow.setContent(contentString);
+    navigator.geolocation.getCurrentPosition(function(position){
+        locationGiven = true;
+        var myLatlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        map.setCenter(myLatlng);
+        infoWindow.setPosition(myLatlng);
+        infoWindow.open(map);
+    },function(){
+        locationGiven = false;
+        var myLatlng = new google.maps.LatLng(46.507635,102.456055);
+        map.setCenter(myLatlng);
+        map.setZoom(4);
+        var contentString = "This is what happens to people who dont Share Location";
+        var infoWindow = new google.maps.InfoWindow();
+        infoWindow.setContent(contentString);
+        infoWindow.setPosition(myLatlng);
+        infoWindow.open(map);
+    }
+    );
+    
+    google.maps.event.addListener(map, 'zoom_changed', function(){
+        if(locationGiven == true) {
+            setTimeout(movetoSing, 3000);
+        }
+    });
+    
+    google.maps.event.addListener(map, 'click', function(event){
+        infoWindow.setPosition(event.latLng);
+    });
+    
+  }
+  
+  function movetoSing(){
+    var sing = new google.maps.LatLng(1.29374,103.847198);
+    map.setCenter(sing);
+  }
+  
+  function loadScript() {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "http://maps.googleapis.com/maps/api/js?sensor=true&callback=initialize";
+    document.body.appendChild(script);
+  }
+  
+  window.onload = loadScript;
+</script> 
+</head> 
+<body> 
+  <div id="map_canvas"></div> 
+</body> 
+</html> 
