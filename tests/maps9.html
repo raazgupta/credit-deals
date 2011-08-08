@@ -38,38 +38,64 @@
   function showNearbyDeals(){
 		//custome image location of beer
 		var image = 'images/beer-image-small.png';
-  
-        //Create markers on the map to show deals
-        var location;
-        var marker;
-        //marker1
-        location = new google.maps.LatLng(1.284674,103.847508);
-        marker = new google.maps.Marker({
-            position: location,
-            map: map,
-			icon: image
-        });
-        marker.setTitle('Riciotti');
-		//Add a click event to the markers to show the deal information on top
-		addMarkerClickListener(marker, 'Riciotti', '3 Pickering Street', '1 for 1 beers at $10/beer');
-        
-        
-        //marker2
-        location = new google.maps.LatLng(1.293736,103.85255);
-        marker = new google.maps.Marker({
-            position: location,
-            map: map,
-			icon: image
-        });
-        marker.setTitle('Brotzeit');
-		//Add a click event to the markers to show the deal information on top
-		addMarkerClickListener(marker, 'Brotzeit','252 North Bridge Road', '1/2 price pints from 3-5pm');
 		
-		//Set center close to the deals found
-		map.setCenter(location);
+		var xmlhttp;
+		//Create an xmlhttp request to pass to the php file
+		if (window.XMLHttpRequest)
+		{
+			// code for IE7+, Firefox, Chrome, Opera, Safari
+			xmlhttp=new XMLHttpRequest();
+		}
 		
+		//After request sent to php file, if the xmlhttp state has changed
+		//then do add the markers to the map with the information
+		xmlhttp.onreadystatechange=function()
+		{
+			  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+				{
+					var location;
+					responseStr = xmlhttp.responseText;
+					//String is formatted as follows
+					// % separator signifies a row in the db
+					// | separator signifies a column in the db row
+					deals = responseStr.split('%');
+					
+					var i;
+					var j;
+					for (i=0; i<deals.length; i++){
+						if(deals[i]!="") 
+						{
+							deal = deals[i];
+							deal_details = deal.split('|');
+							var name = deal_details[0];
+							var address = deal_details[1];
+							var dealinfo = deal_details[2];
+							var latitude = deal_details[3];
+							var longitude = deal_details[4];
+							
+							//The elements in deal_details contains all information
+							//to create the markers
+							var marker;
+							location = new google.maps.LatLng(latitude,longitude);
+							marker = new google.maps.Marker({
+								position: location,
+								map: map,
+								icon: image
+							});
+							marker.setTitle(name);
+							//Add a click event to the markers to show the deal information on top
+							addMarkerClickListener(marker, name, address, dealinfo);
+						}
+					}
+					//Set center close to the deals found
+					map.setCenter(location);
+				}
+		}
 		
-        
+		//Send an asynchronous get request to the php file that will query database
+		//and return string with information
+		xmlhttp.open("GET","getdeals.php",true);
+		xmlhttp.send();  
   }
   
   function addMarkerClickListener(marker, name, address, dealinfo){
