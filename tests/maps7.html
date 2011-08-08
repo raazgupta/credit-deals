@@ -44,7 +44,7 @@
             position: location,
             map: map
         });
-        market.setTitle('Riciotti');
+        marker.setTitle('Riciotti');
         attachMessage(marker, "1 for 1 beers at $10/beer");
         
         //marker2
@@ -53,16 +53,7 @@
             position: location,
             map: map
         });
-        market.setTitle('Brotzeit');
-        attachMessage(marker, "1/2 price pints from 3-5pm");
-        
-        //marker3
-        location = new google.maps.LatLng(1.293736,103.85255);
-        marker = new google.maps.Marker({
-            position: location,
-            map: map
-        });
-        market.setTitle('Brotzeit');
+        marker.setTitle('Brotzeit');
         attachMessage(marker, "1/2 price pints from 3-5pm");
         
   }
@@ -90,6 +81,12 @@
         locationGiven = true;
         var myLatlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
         map.setCenter(myLatlng);
+		var marker = new google.maps.Marker({
+			position: myLatlng,
+			map: map
+		});
+		marker.setTitle('Me');
+		attachMessage(marker, 'You are Here');
     },function(){
         locationGiven = false;
         var myLatlng = new google.maps.LatLng(46.507635,102.456055);
