@@ -35,6 +35,9 @@
   }
   
   function showNearbyDeals(){
+		//custome image location of beer
+		var image = 'images/beer-image-small.png';
+  
         //Create markers on the map to show deals
         var location;
         var marker;
@@ -42,7 +45,8 @@
         location = new google.maps.LatLng(1.284674,103.847508);
         marker = new google.maps.Marker({
             position: location,
-            map: map
+            map: map,
+			icon: image
         });
         marker.setTitle('Riciotti');
         attachMessage(marker, "1 for 1 beers at $10/beer");
@@ -51,10 +55,14 @@
         location = new google.maps.LatLng(1.293736,103.85255);
         marker = new google.maps.Marker({
             position: location,
-            map: map
+            map: map,
+			icon: image
         });
         marker.setTitle('Brotzeit');
         attachMessage(marker, "1/2 price pints from 3-5pm");
+		
+		//Set center close to the deals found
+		map.setCenter(location);
         
   }
   
@@ -72,7 +80,7 @@
   
   function initialize() {
     var myOptions = {
-          zoom: 12,
+          zoom: 13,
           mapTypeId: google.maps.MapTypeId.ROADMAP,
           disableDefaultUI: true
     }
@@ -86,7 +94,7 @@
 			map: map
 		});
 		marker.setTitle('Me');
-		attachMessage(marker, 'You are Here');
+		attachMessage(marker, 'You are Nearby');
     },function(){
         locationGiven = false;
         var myLatlng = new google.maps.LatLng(46.507635,102.456055);
@@ -105,7 +113,7 @@
     var nearbyDealsControl = new dealsNearbyControl(controlDiv, map);
     
     controlDiv.index = 1;
-    map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(controlDiv);
+    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlDiv);
     
   }
   
