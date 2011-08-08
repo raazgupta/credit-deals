@@ -1,0 +1,46 @@
+<html>
+<head>
+<script type="text/javascript">
+function showDeals()
+{
+var responseStr;
+if (window.XMLHttpRequest)
+  {// code for IE7+, Firefox, Chrome, Opera, Safari
+  xmlhttp=new XMLHttpRequest();
+  }
+  
+xmlhttp.onreadystatechange=function()
+  {
+  var i;
+  var j;
+  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+		responseStr = xmlhttp.responseText;
+		deals = responseStr.split('%');
+		for (i=0; i<deals.length; i++){
+			deal = deals[i];
+			deal_details = deal.split('|');
+			for (j=0; j<deal_details.length; j++){
+				strDeal = deal_details[j];
+				alert(strDeal);
+			}
+		}
+    }
+  }
+  
+xmlhttp.open("GET","http://www.soulofmachine.com/deals/getdeals.php?q=Riciotti",true);
+xmlhttp.send();
+}
+</script>
+</head>
+<body>
+
+<form>
+<input type="button" onclick="showDeals()">
+</form>
+<br />
+<br />
+<div id="txtHint"><b>Person info will be listed here.</b></div>
+
+</body>
+</html>
