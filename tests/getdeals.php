@@ -13,7 +13,7 @@ $result = mysql_query($sql);
 
 while($row = mysql_fetch_array($result))
   {
-	echo $row['name'] . '|' . $row['address'] . '|' . $row['dealinfo'] . '|' . $row['latitude'] . '|' . $row['longitude'] . '%';
+	echo $row['name'] . '<column>' . $row['address'] . '<column>' . $row['dealinfo'] . '<column>' . $row['latitude'] . '<column>' . $row['longitude'] . '<row>';
   }
 
 mysql_close($con);

@@ -1,0 +1,172 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /> 
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/> 
+<link href="style.css" rel="stylesheet" type="text/css" />
+<title>SingDeals</title> 
+<script type="text/javascript">
+  var map; 
+  var locationGiven = new Boolean();
+  
+  function dealsNearbyControl(controlDiv, map){
+        controlDiv.style.padding = '5px';
+        
+        //Set CSS for Control border
+        var controlUI = document.createElement('DIV');
+        controlUI.style.backgroundColor = '#3b5998';
+        controlUI.style.color = '#ffffff';
+        controlUI.style.textAlign = 'center';
+        controlUI.style.cursor = 'pointer';
+        controlDiv.appendChild(controlUI);
+        
+        //Set CSS to control interior
+        var controlText = document.createElement('DIV');
+        controlText.style.fontFamily = 'Helvetica';
+        controlText.style.fontSize = '12px';
+        controlText.style.padding = '5px';
+        controlText.style.fontWeight = 'bold';
+        controlText.innerHTML = 'Search Deals Nearby';
+        controlUI.appendChild(controlText);
+        
+        //Setup the click event listener
+        google.maps.event.addDomListener(controlUI, 'click', showNearbyDeals);
+        
+  }
+  
+  function showNearbyDeals(){
+		//custom image location of beer
+		var image = 'images/beer-image-small.png';
+		
+		var xmlhttp;
+		//Create an xmlhttp request to pass to the php file
+		if (window.XMLHttpRequest)
+		{
+			// code for IE7+, Firefox, Chrome, Opera, Safari
+			xmlhttp=new XMLHttpRequest();
+		}
+		
+		//After request sent to php file, if the xmlhttp state has changed
+		//then do add the markers to the map with the information
+		xmlhttp.onreadystatechange=function()
+		{
+			  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+				{
+					var location;
+					responseStr = xmlhttp.responseText;
+					//String is formatted as follows
+					// <row> separator signifies a row in the db
+					// <column> separator signifies a column in the db row
+					deals = responseStr.split('<row>');
+					
+					var i;
+					var j;
+					for (i=0; i<deals.length; i++){
+						if(deals[i]!="") 
+						{
+							deal = deals[i];
+							deal_details = deal.split('<column>');
+							var name = deal_details[0];
+							var address = deal_details[1];
+							var dealinfo = deal_details[2];
+							var latitude = deal_details[3];
+							var longitude = deal_details[4];
+							
+							//The elements in deal_details contains all information
+							//to create the markers
+							var marker;
+							location = new google.maps.LatLng(latitude,longitude);
+							marker = new google.maps.Marker({
+								position: location,
+								map: map
+							});
+							marker.setTitle(name);
+							//Add a click event to the markers to show the deal information on top
+							addMarkerClickListener(marker, name, address, dealinfo);
+						}
+					}
+					//Set center close to the deals found
+					map.setCenter(location);
+				}
+		}
+		
+		//Send an asynchronous get request to the php file that will query database
+		//and return string with information
+		xmlhttp.open("GET","getdeals.php",true);
+		xmlhttp.send();  
+  }
+  
+  function addMarkerClickListener(marker, name, address, dealinfo){
+		google.maps.event.addListener(marker, 'click', function () {
+			showDealDetails(name, address, dealinfo);
+		});
+  }
+  
+  
+  function showDealDetails(name, address, dealinfo){
+		var dealDom = document.createElement('DIV');
+		var parentDom = document.getElementById("deal_info");
+		dealDom.innerHTML = '<div id="deal_border">' +
+								'<div id="deal_text"><span id="deal_highlight">Name: </span>' + name + '</div>' +
+								'<div id="deal_text"><span id="deal_highlight">Address: </span>' + address + '</div>' +
+								'<div id="deal_text"><span id="deal_highlight">Deal: </span>' + dealinfo + '</div>' +
+							'</div>';
+		// removing old information
+		while (parentDom.hasChildNodes()) {
+			parentDom.removeChild(parentDom.lastChild);
+		}
+		
+		//adding new information
+		parentDom.appendChild(dealDom);
+		
+  }
+  
+  function initialize() {
+    var myOptions = {
+          zoom: 13,
+          mapTypeId: google.maps.MapTypeId.ROADMAP,
+          disableDefaultUI: true
+    }
+    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions)
+    navigator.geolocation.getCurrentPosition(function(position){
+        locationGiven = true;
+        var myLatlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        map.setCenter(myLatlng);
+    },function(){
+        locationGiven = false;
+        var myLatlng = new google.maps.LatLng(46.507635,102.456055);
+        map.setCenter(myLatlng);
+        map.setZoom(4);
+        var contentString = "This is what happens to people who dont Share Location";
+        var infoWindow = new google.maps.InfoWindow();
+        infoWindow.setContent(contentString);
+        infoWindow.setPosition(myLatlng);
+        infoWindow.open(map);
+    }
+    );
+    
+    //Create a div to hold the Deals Nearby button and call the DIV contructor
+    var controlDiv = document.createElement('DIV');
+    var nearbyDealsControl = new dealsNearbyControl(controlDiv, map);
+    
+    controlDiv.index = 1;
+    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlDiv);
+    
+  }
+  
+  function loadScript() {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "http://maps.googleapis.com/maps/api/js?sensor=true&callback=initialize";
+    document.body.appendChild(script);
+  }
+  
+  window.onload = loadScript;
+</script> 
+</head> 
+<body>
+	<div id="deal_info"></div>
+	<div id="map_canvas"></div> 
+</body> 
+</html> 
